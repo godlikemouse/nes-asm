@@ -1,0 +1,3 @@
+; main.asm
+Start                            = $8000
+Loop                             = $800A
