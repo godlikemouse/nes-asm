@@ -1,8 +1,8 @@
 # Name Table
 
 NES graphics are displayed using a matrix of tiles, this is known as a
-Name Table.  Each tile is 8x8 pixels.  The Name Table is made up of 32x30 tiles
-(256x240 pixels).  Resolution differs between NTSC and PAL.  The Name Table
+Name Table. Each tile is 8x8 pixels. The Name Table is made up of 32x30 tiles
+(256x240 pixels). Resolution differs between NTSC and PAL. The Name Table
 holds the tile number which relates to the Pattern Table.
 
     | Address | Size  | Flags | Description        |
@@ -31,7 +31,10 @@ Each byte in an Attribute Table represents a 4x4 group of tiles on the screen.
     |   #8  #9   |   #C  #D   |
     |   #A  #B   |   #E  #F   |
 
-Each attribute byte for a given square breaks down in the following way:
+Each attribute byte (`%dddddddd`) for a given square breaks down in the following way:
 
-| D7 | D6 | D5 | D4 | D3 | D2 | D1 | D0 |
-|----|----|----|----|----|----|----|----|
+| D7  | D6  | D5  | D4  | D3  | D2  | D1  | D0  |                               |
+| --- | --- | --- | --- | --- | --- | --- | --- | ----------------------------- |
+| 3   | 3   | 2   | 2   | 1   | 1   | 0   | 0   | Upper color bits for square # |
+
+Each square # contains 4 tiles (ie. Square 0, contains tiles #0,#1,#2,#3). Every 2 bits of an attribute byte corresponds to a given Square # (ie. `%11000000` corresponds to Square 3).
