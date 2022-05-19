@@ -1,3 +1,5 @@
 ; main.asm
 Start                            = $8000
-Loop                             = $800A
+Title_Palette                    = $8021
+Load_Palette                     = $8016
+Loop                             = $80CB

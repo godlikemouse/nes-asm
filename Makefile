@@ -5,7 +5,7 @@ EMU=fceux
 all: clean build run
 
 clean:
-	rm ${FILE}.fns ${FILE}.nes
+	rm -f ${FILE}.fns ${FILE}.nes
 
 build:
 	${CC} ${FILE}.asm
