@@ -1,12 +1,51 @@
+; References
+;
+; https://www.nesdev.org/wiki/Nesdev_Wiki
+
     ; setup the NES header
-    .inesprg    1       ; the number of 16k prg banks
-    .ineschr    1       ; the number of 8k chr banks
+    .inesprg    1       ; the number of 16k prg banks (PRG-ROM)
+    .ineschr    1       ; the number of 8k chr banks (CHR-ROM)
     .inesmir    1       ; the vram mirroring of the banks (vertical mirroring)
     .inesmap    0       ; the nes mapper to be used (no mapper)
 
     ; setup game code
     .org $8000          ; game code starts at either $8000 or $c000
     .bank 0             ; game code stored in bank 0
+
+Wait_For_VBlank:
+    bit $2002
+    bpl Wait_For_VBlank
+    rts
+
+Reset:
+    sei
+    cld
+    ldx #$40
+    stx $4017           ; disable player 2 controller
+    ldx #$ff
+    txs
+    inx
+    stx $2000
+    stx $2001
+    stx $4010
+
+    jsr Wait_For_VBlank
+
+    txa
+
+Clear_Memory:
+    sta $0000,x
+    sta $0100,x
+    sta $0300,x
+    sta $0400,x
+    sta $0500,x
+    sta $0600,x
+    sta $0700,x
+    lda #$ff
+    sta $0200,x         ; Hide all sprites
+    inx
+    bne Clear_Memory
+
 
 Start:
     ; setup the PPU (see docs/PPU.md)
@@ -38,9 +77,9 @@ Loop:
     ; setup NS routine handlers
     .bank 1             ; needed or NESASM gets cranky
     .org $fffa
-    .dw	0               ; NMI_Routine($fffa)
-    .dw	Start           ; Reset_Routine($fffc)
-    .dw	0               ; IRQ_Routine($fffe)
+    .word 0             ; NMI_Routine($fffa) VBlank
+    .word Reset         ; Reset_Routine($fffc)
+    .word 0             ; IRQ_Routine($fffe)
 
     .bank 2
     .org $0000

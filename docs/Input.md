@@ -1,9 +1,7 @@
 # Input
 
-To read input from the controllers, access memory location $4016 for player 1
-and $4017 for player 2. Before reading from a controller, you must strobe them,
-by sending a #1 then a #0 to the desired controller address. Afterward, you
-can read from the input address.
+To read input from the controllers, access memory location `$4016` for player 1
+and `$4017` for player 2. Before reading from a controller, you must strobe them, by sending a #1 then a #0 to the desired controller address. Afterward, you can read from the input address.  Note, values are retrieved 1 bit at a time, not a byte at a time.  For example, to read values for all buttons requires 8 reads to either `$4016` or `$4017` respectively.
 
 | Value | Button | Description       |
 | ----- | ------ | ----------------- |
