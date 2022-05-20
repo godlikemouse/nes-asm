@@ -59,13 +59,13 @@ if width * height != 16384:
 # prepare asm file
 asm_file = open(out_file, "w")
 
+# populate pixels list
 pixels = list()
 for row in row_list:
     pixels.append(list(row))
 
+# interate pixels and write out asm
 index = 0
-row_offset = 0
-
 for row in range(int(height / tile_height)):
     for col in range(int(width / tile_width)):
         asm_file.write(f"\t; pattern {index}\n")
@@ -81,7 +81,7 @@ for row in range(int(height / tile_height)):
         #       draws 8 bit line using palette color 1
         second_half = list()
 
-        for y in range((row + row_offset) * tile_height, (row + row_offset) * tile_height + tile_height):
+        for y in range(row * tile_height, row * tile_height + tile_height):
 
             # write first half of image date directly out to asm file
             asm_file.write("\t.byte %")
@@ -104,4 +104,3 @@ for row in range(int(height / tile_height)):
             asm_file.write(i)
 
         index += 1
-row_offset += 8
