@@ -102,5 +102,6 @@ for row in range(int(height / tile_height)):
         asm_file.write(f"\t; pattern {index}:1\n")
         for i in second_half:
             asm_file.write(i)
+        asm_file.write("\n")
 
         index += 1
