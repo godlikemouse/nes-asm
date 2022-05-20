@@ -1,8 +1,0 @@
-; main.asm
-Start                            = $803B
-Wait_For_VBlank                  = $8000
-Clear_Memory                     = $801E
-Reset                            = $8006
-Title_Palette                    = $805C
-Load_Palette                     = $8051
-Loop                             = $8106

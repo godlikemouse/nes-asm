@@ -2,13 +2,22 @@ CC=nesasm
 FILE=main
 EMU=fceux
 
-all: clean build run
+all: clean generate-pattern-tables build run
 
 clean:
-	rm -f ${FILE}.fns ${FILE}.nes
+	$(info --- Clean)
+	rm -f bin/*
 
 build:
-	${CC} ${FILE}.asm
+	$(info --- Build)
+	${CC} -l 3 src/${FILE}.asm
+	mv src/${FILE}.fns bin/
+	mv src/${FILE}.nes bin/
+	mv src/${FILE}.lst bin/
 
 run:
-	${EMU} ${FILE}.nes
+	${EMU} bin/${FILE}.nes
+
+generate-pattern-tables:
+	$(info --- Generate pattern tables)
+	tools/pattern-table.py --img=art/test.png --asm=src/test.chr

@@ -2,6 +2,8 @@
 ;
 ; https://www.nesdev.org/wiki/Nesdev_Wiki
 
+    .list
+
     ; setup the NES header
     .inesprg    1       ; the number of 16k prg banks (PRG-ROM)
     .ineschr    1       ; the number of 8k chr banks (CHR-ROM)
@@ -18,16 +20,16 @@ Wait_For_VBlank:
     rts
 
 Reset:
-    sei
-    cld
+    sei                 ; disable IRQs
+    cld                 ; disable decimal mode
     ldx #$40
-    stx $4017           ; disable player 2 controller
+    stx $4017           ; disable APU frame IRQ
     ldx #$ff
-    txs
+    txs                 ; setup stack
     inx
-    stx $2000
-    stx $2001
-    stx $4010
+    stx $2000           ; disable NIM
+    stx $2001           ; disable rendering
+    stx $4010           ; disable DMC IRQs
 
     jsr Wait_For_VBlank
 
@@ -36,15 +38,19 @@ Reset:
 Clear_Memory:
     sta $0000,x
     sta $0100,x
-    sta $0300,x
+    sta $0200,x
     sta $0400,x
     sta $0500,x
     sta $0600,x
     sta $0700,x
-    lda #$ff
-    sta $0200,x         ; Hide all sprites
+    lda #$fe
+    sta $0300,x
     inx
     bne Clear_Memory
+
+Wait_For_VBlank2
+    bit $2002
+    bpl Wait_For_VBlank2
 
 
 Start:
@@ -60,17 +66,20 @@ Start:
     lda #$00
     sta $2006
 
+
+    ; setup palette
+Test_Palette:
+    .include "src/test.pal"
+
     ldx #0
 Load_Palette:
-    lda Title_Palette,x
+    lda Test_Palette,x
     sta $2007
     inx
     cpx #$20
     bne Load_Palette
 
-Title_Palette:
-    .incbin "test.pal"
-
+    ; main loop
 Loop:
     jmp Loop
 
@@ -83,4 +92,4 @@ Loop:
 
     .bank 2
     .org $0000
-    .incbin "test.chr"  ; must be 8192 bytes long
+    .include "src/test.chr"  ; must be 8192 bytes long
