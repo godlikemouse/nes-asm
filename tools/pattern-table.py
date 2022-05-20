@@ -59,7 +59,6 @@ if width * height != 16384:
 # prepare asm file
 asm_file = open(out_file, "w")
 
-# pattern table must include 512 bytes
 pixels = list()
 for row in row_list:
     pixels.append(list(row))
@@ -71,10 +70,24 @@ for row in range(int(height / tile_height)):
     for col in range(int(width / tile_width)):
         asm_file.write(f"\t; pattern {index}\n")
 
+        # byte data for NES pattern tables are separated across 2 bytes
+        # associated second byte is written 8 bytes after first half
+        # second half contains left bit, first half contains second bit
+        # example: 01 - selects palette color 1, but is stored as:
+        #     first half bit: 1
+        #     second half bit: 0
+        #     first: %11111111
+        #     second: %00000000
+        #       draws 8 bit line using palette color 1
         second_half = list()
 
         for y in range((row + row_offset) * tile_height, (row + row_offset) * tile_height + tile_height):
+
+            # write first half of image date directly out to asm file
             asm_file.write("\t.byte %")
+
+            # store second half of image data temporarity until first 8x8
+            # has been written
             second_half.append("\t.byte %")
 
             for x in range(col * tile_width, col * tile_width + tile_width):
@@ -85,6 +98,7 @@ for row in range(int(height / tile_height)):
             asm_file.write("\n")
             second_half.append("\n")
 
+        # write second half of image data
         asm_file.write(f"\t; pattern {index}:1\n")
         for i in second_half:
             asm_file.write(i)
