@@ -11,6 +11,7 @@ clean:
 build:
 	$(info --- Build)
 	${CC} -l 3 src/${FILE}.asm
+	mkdir -p bin
 	mv src/${FILE}.fns bin/
 	mv src/${FILE}.nes bin/
 	mv src/${FILE}.lst bin/
