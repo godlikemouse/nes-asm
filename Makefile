@@ -1,4 +1,5 @@
-CC=nesasm
+CC=ca65
+LD=ld65
 FILE=main
 EMU=fceux
 
@@ -10,11 +11,9 @@ clean:
 
 build:
 	$(info --- Build)
-	${CC} -l 3 src/${FILE}.asm
 	mkdir -p bin
-	mv src/${FILE}.fns bin/
-	mv src/${FILE}.nes bin/
-	mv src/${FILE}.lst bin/
+	${CC} src/${FILE}.asm -o bin/${FILE}.o -t nes
+	${LD} bin/${FILE}.o -o bin/${FILE}.nes -t nes
 
 run:
 	${EMU} bin/${FILE}.nes

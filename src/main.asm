@@ -1,18 +1,29 @@
 ; References
 ;
-; https://www.nesdev.org/wiki/Nesdev_Wiki
-
-    .list
+; https://cc65.github.io/doc/ca65.html
 
     ; setup the NES header
-    .inesprg    1       ; the number of 16k prg banks (PRG-ROM)
-    .ineschr    1       ; the number of 8k chr banks (CHR-ROM)
-    .inesmir    1       ; the vram mirroring of the banks (vertical mirroring)
-    .inesmap    0       ; the nes mapper to be used (no mapper)
+.segment "HEADER"
 
-    ; setup game code
-    .bank 0             ; game code stored in bank 0
-    .org $c000          ; game code starts at either $8000 or $c000
+    .byte "NES"         ; NES constant
+    .byte $1a           ; MS-DOS EOL
+    .byte $02           ; the number of 16k prg banks (PRG-ROM)
+    .byte $01           ; the number of 8k chr banks (CHR-ROM)
+    .byte $01           ; the vram mirroring of the banks (vertical mirroring)
+    .byte $00           ; the nes mapper to be used (no mapper)
+    .byte $00           ; PRG-RAM size (rarely used extension)
+    .byte $00           ; NTSC
+    .byte $00           ; TV system, PRG-RAM presence (rarely used extension)
+    .byte $00           ; Unused padding
+    .byte $00           ; Unused padding
+    .byte $00           ; Unused padding
+    .byte $00           ; Unused padding
+    .byte $00           ; Unused padding
+
+.segment "ZEROPAGE"
+
+
+.segment "STARTUP"
 
 Reset:
     sei                 ; disable IRQs
@@ -26,20 +37,23 @@ Reset:
     stx $2001           ; disable rendering
     stx $4010           ; disable DMC IRQs
 
-Wait_For_VBlank:
+Wait_For_VBlank1:
     bit $2002
-    bpl Wait_For_VBlank
+    bpl Wait_For_VBlank1
+
+    txa
 
 Clear_Memory:
     sta $0000,x
     sta $0100,x
-    sta $0200,x
+    sta $0300,x
     sta $0400,x
     sta $0500,x
     sta $0600,x
     sta $0700,x
-    lda #$fe
-    sta $0300,x
+    lda #$ff
+    sta $0200,x
+    lda #0
     inx
     bne Clear_Memory
 
@@ -168,28 +182,27 @@ NMI_Routine:
 
 
 
+    ;.org $e000
 
-    .bank 1
-    .org $e000
-
-    .include "src/test.pal"
+    .include "test.pal"
 
 Sprites:
      ;vert tile attr horiz
-  .db $80, $32, $00, $80   ;sprite 0
-  .db $80, $33, $00, $88   ;sprite 1
-  .db $88, $34, $00, $80   ;sprite 2
-  .db $88, $35, $00, $88   ;sprite 3
+    .byte $80, $32, $00, $80   ;sprite 0
+    .byte $80, $33, $00, $88   ;sprite 1
+    .byte $88, $34, $00, $80   ;sprite 2
+    .byte $88, $35, $00, $88   ;sprite 3
 
-    .include "src/background.asm"
+    .include "background.asm"
+
+.segment "VECTORS"
 
     ; setup NS routine handlers
-    .org $fffa
+    ;.org $fffa
     .word NMI_Routine   ; NMI_Routine($fffa) VBlank
     .word Reset         ; Reset_Routine($fffc)
     .word 0             ; IRQ_Routine($fffe)
 
-
-    .bank 2
-    .org $0000
-    .include "src/test.chr"  ; must be 8192 bytes long
+.segment "CHARS"
+    ;.org $0000
+    .include "test.chr"  ; must be 8192 bytes long
