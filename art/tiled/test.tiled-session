@@ -1,0 +1,67 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "test_nametable.tmx",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "/home/godlikemouse/atari/code/asm/dungeoneer/art/tiled/level1_map.intro.tmx": {
+            "scale": 6.534146341463415,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 78.0515117581187,
+                "y": 48.055244494214264
+            }
+        },
+        "/home/godlikemouse/atari/code/asm/dungeoneer/art/tiled/level1_map.map.tmx": {
+            "scale": 6.545731707317073,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 77.91336748952025,
+                "y": 48.12296227293898
+            }
+        },
+        "/home/godlikemouse/game_tileset.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "test_nametable.tmx": {
+            "scale": 3.6733333333333333,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 127.9491833030853,
+                "y": 119.78221415607986
+            }
+        },
+        "test_tileset.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.exportedFilePath": "/home/godlikemouse/nes/code/nes-asm/art/tiled",
+    "last.imagePath": "/home/godlikemouse/nes/code/nes-asm/art",
+    "map.height": 30,
+    "map.lastUsedExportFilter": "All Files (*)",
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 8,
+    "map.tileWidth": 8,
+    "map.width": 32,
+    "openFiles": [
+        "test_nametable.tmx",
+        "test_tileset.tsx"
+    ],
+    "project": "test.tiled-project",
+    "recentFiles": [
+        "test_tileset.tsx",
+        "test_nametable.tmx",
+        "/home/godlikemouse/game_tileset.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 8,
+        "width": 8
+    }
+}

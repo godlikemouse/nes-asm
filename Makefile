@@ -12,7 +12,7 @@ clean:
 build:
 	$(info --- Build)
 	mkdir -p bin
-	${CC} src/${FILE}.asm -o bin/${FILE}.o -t nes
+	${CC} src/${FILE}.asm -o bin/${FILE}.o -t nes -l bin/${FILE}.lst
 	${LD} bin/${FILE}.o -o bin/${FILE}.nes -t nes
 
 run:
@@ -20,4 +20,4 @@ run:
 
 generate-pattern-tables:
 	$(info --- Generate pattern tables)
-	tools/pattern-table.py --img=art/test.png --asm=src/test.chr
+	tools/pattern-table.py --img=art/test.png --asm=src/char/test.asm

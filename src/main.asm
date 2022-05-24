@@ -1,5 +1,6 @@
 ; References
 ;
+; CA65 Assembler:
 ; https://cc65.github.io/doc/ca65.html
 
     ; setup the NES header
@@ -9,7 +10,7 @@
     .byte $1a           ; MS-DOS EOL
     .byte $02           ; the number of 16k prg banks (PRG-ROM)
     .byte $01           ; the number of 8k chr banks (CHR-ROM)
-    .byte $01           ; the vram mirroring of the banks (vertical mirroring)
+    .byte $01           ; the vram mirroring (vert mirroring/horz scroll)
     .byte $00           ; the nes mapper to be used (no mapper)
     .byte $00           ; PRG-RAM size (rarely used extension)
     .byte $00           ; NTSC
@@ -37,10 +38,8 @@ Reset:
     stx $2001           ; disable rendering
     stx $4010           ; disable DMC IRQs
 
-Wait_For_VBlank1:
-    bit $2002
-    bpl Wait_For_VBlank1
-
+    ; wait for vblank sync
+    jsr Wait_For_VBlank
     txa
 
 Clear_Memory:
@@ -57,9 +56,8 @@ Clear_Memory:
     inx
     bne Clear_Memory
 
-Wait_For_VBlank2:
-    bit $2002
-    bpl Wait_For_VBlank2
+    ; wait for vblank sync
+    jsr Wait_For_VBlank
 
 Load_Palette:
     ; setup palette - write sequentially to $2006 (store address $3f00)
@@ -104,35 +102,35 @@ Load_Background_Loop:
     lda Background_Nametable,x
     sta $2007
 
-    ldx #0
-Load_Background_Loop2:
-    lda Background_Nametable+$100,x
-    sta $2007
-    inx
-    cpx #$ff
-    bne Load_Background_Loop2
-    lda Background_Nametable,x
-    sta $2007
+;    ldx #0
+;Load_Background_Loop2:
+;    lda Background_Nametable+$100,x
+;    sta $2007
+;    inx
+;    cpx #$ff
+;    bne Load_Background_Loop2
+;    lda Background_Nametable,x
+;    sta $2007
 
-    ldx #0
-Load_Background_Loop3:
-    lda Background_Nametable+$200,x
-    sta $2007
-    inx
-    cpx #$ff
-    bne Load_Background_Loop3
-    lda Background_Nametable,x
-    sta $2007
+;    ldx #0
+;Load_Background_Loop3:
+;    lda Background_Nametable+$200,x
+;    sta $2007
+;    inx
+;    cpx #$ff
+;    bne Load_Background_Loop3
+;    lda Background_Nametable,x
+;    sta $2007
 
-    ldx #0
-Load_Background_Loop4:
-    lda Background_Nametable+$300,x
-    sta $2007
-    inx
-    cpx #$c0
-    bne Load_Background_Loop4
-    lda Background_Nametable,x
-    sta $2007
+;    ldx #0
+;Load_Background_Loop4:
+;    lda Background_Nametable+$300,x
+;    sta $2007
+;    inx
+;    cpx #$c0
+;    bne Load_Background_Loop4
+;    lda Background_Nametable,x
+;    sta $2007
 
 
 Load_Background_Attribute:
@@ -159,8 +157,15 @@ Load_Background_Attribute_Loop:
 
 
     ; main loop
-Loop:
-    jmp Loop
+    jmp *
+
+
+.proc Wait_For_VBlank
+wait:
+    bit $2002
+    bpl wait
+    rts
+.endproc
 
 NMI_Routine:
     lda #$00
@@ -181,10 +186,7 @@ NMI_Routine:
     rti
 
 
-
-    ;.org $e000
-
-    .include "test.pal"
+    .include "palette/test.asm"
 
 Sprites:
      ;vert tile attr horiz
@@ -193,16 +195,14 @@ Sprites:
     .byte $88, $34, $00, $80   ;sprite 2
     .byte $88, $35, $00, $88   ;sprite 3
 
-    .include "background.asm"
+    .include "nametable/test.asm"
+    .include "nametable/test-attr.asm"
 
 .segment "VECTORS"
-
     ; setup NS routine handlers
-    ;.org $fffa
     .word NMI_Routine   ; NMI_Routine($fffa) VBlank
     .word Reset         ; Reset_Routine($fffc)
     .word 0             ; IRQ_Routine($fffe)
 
 .segment "CHARS"
-    ;.org $0000
-    .include "test.chr"  ; must be 8192 bytes long
+    .include "char/test.asm"  ; must be 8192 bytes long
