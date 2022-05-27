@@ -24,5 +24,5 @@ generate-pattern-tables:
 
 generate-name-tables:
 	$(info --- Generate name tables)
-	tools/name-table.py	--csv=art/tiled/test_nametable.csv --asm=src/nametable/test.asm --label=Background_Nametable
+	tools/name-table.py	--csv=art/tiled/test_nametable1.csv --asm=src/nametable/test1.asm --label=Background_Nametable1
 	tools/name-table.py	--csv=art/tiled/test_nametable2.csv --asm=src/nametable/test2.asm --label=Background_Nametable2

@@ -4,6 +4,7 @@
     ],
     "extensionsPath": "../../../../../atari/code/asm/dungeoneer/art/tiled/extensions",
     "folders": [
+        "."
     ],
     "objectTypesFile": "",
     "propertyTypes": [
