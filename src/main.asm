@@ -23,8 +23,12 @@
 
 .segment "ZEROPAGE"
 
+NT_ADDR: .res 2, $00    ; Nametable address used for loading into nametables
 
 .segment "STARTUP"
+
+    .include "memory.asm"
+    .include "util/macro.asm"
 
 Reset:
     sei                 ; disable IRQs
@@ -91,46 +95,11 @@ Load_Background:
     lda #$00
     sta $2006           ; write the low byte of $2000 address
 
-
-    ldx #0
-Load_Background_Loop:
-    lda Background_Nametable,x
-    sta $2007
-    inx
-    cpx #$ff
-    bne Load_Background_Loop
-    lda Background_Nametable,x
-    sta $2007
-
-;    ldx #0
-;Load_Background_Loop2:
-;    lda Background_Nametable+$100,x
-;    sta $2007
-;    inx
-;    cpx #$ff
-;    bne Load_Background_Loop2
-;    lda Background_Nametable,x
-;    sta $2007
-
-;    ldx #0
-;Load_Background_Loop3:
-;    lda Background_Nametable+$200,x
-;    sta $2007
-;    inx
-;    cpx #$ff
-;    bne Load_Background_Loop3
-;    lda Background_Nametable,x
-;    sta $2007
-
-;    ldx #0
-;Load_Background_Loop4:
-;    lda Background_Nametable+$300,x
-;    sta $2007
-;    inx
-;    cpx #$c0
-;    bne Load_Background_Loop4
-;    lda Background_Nametable,x
-;    sta $2007
+    ; populate background nametables 1 and 2 with the same source
+    mwx Background_Nametable, NT_ADDR
+    jsr populate_nametable1
+    mwx Background_Nametable2, NT_ADDR
+    jsr populate_nametable2
 
 
 Load_Background_Attribute:
@@ -158,6 +127,63 @@ Load_Background_Attribute_Loop:
 
     ; main loop
     jmp *
+
+;
+; populate nametable 1
+;   requires indirect address of NT_ADDR to be set prior to invocation
+.proc populate_nametable1
+
+    ldx #0
+main:
+    ldy #0
+    cpx #4
+    beq done
+loop:
+    lda (NT_ADDR),y
+    sta NTADDR1
+    iny
+    cpy #$ff
+    bne loop
+
+    lda (NT_ADDR),y
+    sta NTADDR1
+
+    inc NT_ADDR+1
+    inx
+    jmp main
+
+done:
+    rts
+.endproc
+
+;
+; populate nametable 2
+;   requires indirect address of NT_ADDR to be set prior to invocation
+.proc populate_nametable2
+
+    ldx #0
+main:
+    ldy #0
+    cpx #4
+    beq done
+loop:
+    lda (NT_ADDR),y
+    sta NTADDR2
+    iny
+    cpy #$ff
+    bne loop
+
+    lda (NT_ADDR),y
+    sta NTADDR2
+
+    inc NT_ADDR+1
+    inx
+    jmp main
+
+done:
+    rts
+.endproc
+
 
 
 .proc Wait_For_VBlank
@@ -197,6 +223,7 @@ Sprites:
 
     .include "nametable/test.asm"
     .include "nametable/test-attr.asm"
+    .include "nametable/test2.asm"
 
 .segment "VECTORS"
     ; setup NS routine handlers
