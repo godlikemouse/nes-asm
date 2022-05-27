@@ -95,7 +95,7 @@ Load_Background:
     lda #$00
     sta $2006           ; write the low byte of $2000 address
 
-    ; populate background nametables 1 and 2 with the same source
+    ; populate background nametables 1 and 2
     mwx Background_Nametable, NT_ADDR
     jsr populate_nametable1
     mwx Background_Nametable2, NT_ADDR
