@@ -3,7 +3,7 @@ LD=ld65
 FILE=main
 EMU=fceux
 
-all: clean generate-pattern-tables build run
+all: clean generate-pattern-tables generate-name-tables build run
 
 clean:
 	$(info --- Clean)
@@ -21,3 +21,7 @@ run:
 generate-pattern-tables:
 	$(info --- Generate pattern tables)
 	tools/pattern-table.py --img=art/test.png --asm=src/char/test.asm
+
+generate-name-tables:
+	$(info --- Generate name tables)
+	tools/name-table.py	--csv=art/tiled/test_nametable.csv --asm=src/nametable/test.asm --label=Background_Nametable

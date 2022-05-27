@@ -14,11 +14,11 @@ def usage():
     print("\t\t--img: path to PNG image file")
     print("\t\t--asm: path to output assembly file")
     print()
-    print("\tGenerates an assembly based pattern table (PRG-CHR) by reading in")
-    print("\ta 4 color indexed PNG image file.")
+    print("\tGenerates an NES assembly based pattern table (PRG-CHR) by reading")
+    print("\tin a 4 color indexed PNG image file.")
     print()
     print("\texample:")
-    print("\t\tpattern-table --img=myfile.png --asm=code/myasm.asm")
+    print("\t\tpattern-table --img=myfile.png --asm=code/pattern-table.asm")
     exit(1)
 
 # handle inputs
